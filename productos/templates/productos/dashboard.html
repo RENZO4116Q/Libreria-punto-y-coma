@@ -1,0 +1,476 @@
+{% extends "productos/base.html" %}
+
+{% block titulo %}
+Inicio | Librería Punto y Coma
+{% endblock %}
+
+{% block menu_inicio %}
+activo
+{% endblock %}
+
+{% block topbar %}
+Panel principal
+{% endblock %}
+
+{% block contenido %}
+
+<!-- ENCABEZADO -->
+
+<div class="encabezado-pagina">
+
+    <div>
+        <h2>Panel de inventario</h2>
+
+        <p>
+            Resumen general de la Librería Punto y Coma.
+        </p>
+    </div>
+
+    <a
+        href="{% url 'productos:crear' %}"
+        class="btn btn-principal"
+    >
+        + Registrar producto
+    </a>
+
+</div>
+
+
+<!-- TARJETAS DE RESUMEN -->
+
+<div class="dashboard-grid">
+
+    <div class="tarjeta resumen-card">
+
+        <div class="resumen-icono">
+            📚
+        </div>
+
+        <div>
+            <span class="resumen-etiqueta">
+                Productos registrados
+            </span>
+
+            <strong class="resumen-numero">
+                {{ total_productos }}
+            </strong>
+
+            <span class="resumen-detalle">
+                {{ total_activos }} activos
+            </span>
+        </div>
+
+    </div>
+
+
+    <div class="tarjeta resumen-card">
+
+        <div class="resumen-icono">
+            Bs
+        </div>
+
+        <div>
+            <span class="resumen-etiqueta">
+                Valor del inventario
+            </span>
+
+            <strong class="resumen-numero">
+                {{ valor_total|floatformat:2 }}
+            </strong>
+
+            <span class="resumen-detalle">
+                Bolivianos
+            </span>
+        </div>
+
+    </div>
+
+
+    <div class="tarjeta resumen-card">
+
+        <div class="resumen-icono">
+            ⚠
+        </div>
+
+        <div>
+            <span class="resumen-etiqueta">
+                Stock bajo
+            </span>
+
+            <strong class="resumen-numero">
+                {{ total_stock_bajo }}
+            </strong>
+
+            <span class="resumen-detalle">
+                Requieren reposición
+            </span>
+        </div>
+
+    </div>
+
+
+    <div class="tarjeta resumen-card">
+
+        <div class="resumen-icono">
+            !
+        </div>
+
+        <div>
+            <span class="resumen-etiqueta">
+                Productos agotados
+            </span>
+
+            <strong class="resumen-numero">
+                {{ total_agotados }}
+            </strong>
+
+            <span class="resumen-detalle">
+                Sin existencias
+            </span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ACCESOS RÁPIDOS -->
+
+<div class="seccion-dashboard">
+
+    <div class="titulo-seccion">
+        <div>
+            <h3>Accesos rápidos</h3>
+            <p>Funciones principales del sistema.</p>
+        </div>
+    </div>
+
+
+    <div class="accesos-grid">
+
+        <a
+            href="{% url 'productos:lista' %}"
+            class="acceso-card"
+        >
+            <span class="acceso-icono">▦</span>
+
+            <div>
+                <strong>Inventario</strong>
+                <span>
+                    Consultar y administrar productos
+                </span>
+            </div>
+        </a>
+
+
+        <a
+            href="{% url 'productos:crear' %}"
+            class="acceso-card"
+        >
+            <span class="acceso-icono">＋</span>
+
+            <div>
+                <strong>Nuevo producto</strong>
+                <span>
+                    Registrar un artículo
+                </span>
+            </div>
+        </a>
+
+
+        <a
+            href="{% url 'productos:reportes' %}"
+            class="acceso-card"
+        >
+            <span class="acceso-icono">▤</span>
+
+            <div>
+                <strong>Reportes</strong>
+                <span>
+                    Consultar información del inventario
+                </span>
+            </div>
+        </a>
+
+
+        <a
+            href="{% url 'chat' %}"
+            class="acceso-card"
+        >
+            <span class="acceso-icono">✦</span>
+
+            <div>
+                <strong>Asistente IA</strong>
+                <span>
+                    Consultar el inventario con Ollama
+                </span>
+            </div>
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- INFORMACIÓN -->
+
+<div class="dashboard-columnas">
+
+
+    <!-- STOCK BAJO -->
+
+    <div class="tarjeta">
+
+        <div class="tarjeta-header">
+
+            <div>
+                <h3>Stock bajo</h3>
+                <p>Productos que requieren atención.</p>
+            </div>
+
+        </div>
+
+
+        <div class="tarjeta-cuerpo">
+
+            {% if productos_stock_bajo %}
+
+                <div class="lista-dashboard">
+
+                    {% for producto in productos_stock_bajo %}
+
+                        <a
+                            href="{% url 'productos:detalle' producto.pk %}"
+                            class="dashboard-producto"
+                        >
+
+                            <div>
+
+                                <strong>
+                                    {{ producto.nombre }}
+                                </strong>
+
+                                <span>
+                                    {{ producto.codigo }}
+                                    ·
+                                    {{ producto.get_categoria_display }}
+                                </span>
+
+                            </div>
+
+                            <div class="dashboard-cantidad">
+
+                                <span class="estado estado-bajo">
+                                    {{ producto.cantidad_existente }}
+                                    unidades
+                                </span>
+
+                                <small>
+                                    Mínimo:
+                                    {{ producto.stock_minimo }}
+                                </small>
+
+                            </div>
+
+                        </a>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="dashboard-vacio">
+
+                    <strong>
+                        Sin alertas de stock
+                    </strong>
+
+                    <p>
+                        Todos los productos tienen
+                        existencias suficientes.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- ÚLTIMOS PRODUCTOS -->
+
+    <div class="tarjeta">
+
+        <div class="tarjeta-header">
+
+            <div>
+                <h3>Últimos productos</h3>
+
+                <p>
+                    Registros recientes del inventario.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="tarjeta-cuerpo">
+
+            {% if ultimos_productos %}
+
+                <div class="lista-dashboard">
+
+                    {% for producto in ultimos_productos %}
+
+                        <a
+                            href="{% url 'productos:detalle' producto.pk %}"
+                            class="dashboard-producto"
+                        >
+
+                            <div>
+
+                                <strong>
+                                    {{ producto.nombre }}
+                                </strong>
+
+                                <span>
+                                    {{ producto.codigo }}
+                                    ·
+                                    {{ producto.get_categoria_display }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="dashboard-cantidad">
+
+                                {% if not producto.estado %}
+
+                                    <span class="estado estado-inactivo">
+                                        Inactivo
+                                    </span>
+
+                                {% elif producto.agotado %}
+
+                                    <span class="estado estado-agotado">
+                                        Agotado
+                                    </span>
+
+                                {% elif producto.stock_bajo %}
+
+                                    <span class="estado estado-bajo">
+                                        Stock bajo
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="estado estado-normal">
+                                        Disponible
+                                    </span>
+
+                                {% endif %}
+
+                                <small>
+                                    {{ producto.fecha_registro|date:"d/m/Y" }}
+                                </small>
+
+                            </div>
+
+                        </a>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="dashboard-vacio">
+
+                    <strong>
+                        No hay productos
+                    </strong>
+
+                    <p>
+                        Registra el primer producto
+                        del inventario.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- AGOTADOS -->
+
+{% if productos_agotados %}
+
+<div class="seccion-dashboard">
+
+    <div class="tarjeta">
+
+        <div class="tarjeta-header">
+
+            <div>
+                <h3>Productos agotados</h3>
+
+                <p>
+                    Artículos activos actualmente sin existencias.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="tarjeta-cuerpo">
+
+            <div class="lista-dashboard">
+
+                {% for producto in productos_agotados %}
+
+                    <a
+                        href="{% url 'productos:detalle' producto.pk %}"
+                        class="dashboard-producto"
+                    >
+
+                        <div>
+
+                            <strong>
+                                {{ producto.nombre }}
+                            </strong>
+
+                            <span>
+                                {{ producto.codigo }}
+                                ·
+                                {{ producto.get_categoria_display }}
+                            </span>
+
+                        </div>
+
+                        <span class="estado estado-agotado">
+                            Agotado
+                        </span>
+
+                    </a>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+{% endblock %}

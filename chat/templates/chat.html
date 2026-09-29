@@ -1,44 +1,450 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Django Chat App</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-      $(document).ready(function () {
-        $("#chat-form").submit(function (event) {
-          event.preventDefault();
-          var userInput = $("#user-input").val();
-          $("#user-input").val("");
-          $("#chat-history").append(
-            "<p><strong>User:</strong></p><p>" + userInput + "</p>"
-          );
-          var aiResponseElement = $("<p>");
-          $("#chat-history").append($("<strong>").text("AI:"));
-          $("#chat-history").append(aiResponseElement);
-          $.ajax({
-            type: "POST",
-            url: "/chat/",
-            data: { user_input: userInput },
-            xhrFields: {
-              onprogress: function (xhr) {
-                var response = xhr.target.responseText;
-                console.log(xhr);
-                console.log(response);
-                aiResponseElement.html(function (i, oldHtml) {
-                  return response;
-                });
-              },
-            },
-          });
-        });
-      });
-    </script>
-  </head>
-  <body>
-    <div id="chat-history"></div>
-    <form id="chat-form">
-      <input type="text" id="user-input" name="user_input" required />
-      <button type="submit">Send</button>
-    </form>
-  </body>
-</html>
+{% extends "productos/base.html" %}
+
+{% block titulo %}
+Asistente IA | Librería Punto y Coma
+{% endblock %}
+
+{% block topbar %}
+Asistente de Inventario
+{% endblock %}
+
+{% block contenido %}
+
+<div class="encabezado-pagina">
+
+    <div>
+        <h2>Asistente de Inventario</h2>
+
+        <p>
+            Consulta los productos registrados en Librería Punto y Coma
+            utilizando inteligencia artificial local mediante Ollama.
+        </p>
+    </div>
+
+    <a
+        href="{% url 'historial' %}"
+        class="btn btn-secundario"
+    >
+        Ver historial
+    </a>
+
+</div>
+
+
+<!-- ==================================================
+     INFORMACIÓN DEL ASISTENTE
+================================================== -->
+
+<div class="ia-info">
+
+    <div class="ia-info-icono">
+        ✦
+    </div>
+
+    <div>
+        <strong>
+            Asistente IA de Punto y Coma
+        </strong>
+
+        <p>
+            Responde exclusivamente consultas relacionadas con
+            los productos e inventario registrados en el sistema.
+        </p>
+    </div>
+
+    <div class="ia-estado">
+        <span></span>
+        Ollama local
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     PREGUNTAS RÁPIDAS
+================================================== -->
+
+<div class="tarjeta ia-preguntas-tarjeta">
+
+    <div class="tarjeta-header">
+
+        <div>
+            <span class="reporte-numero">
+                CONSULTAS SUGERIDAS
+            </span>
+
+            <h3>
+                Preguntas rápidas
+            </h3>
+
+            <p>
+                Selecciona una consulta o escribe tu propia pregunta.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="tarjeta-cuerpo">
+
+        <div class="preguntas-rapidas">
+
+            <button
+                type="button"
+                class="pregunta-rapida"
+                data-pregunta="¿Cuál es el producto más caro?"
+            >
+                Producto más caro
+            </button>
+
+            <button
+                type="button"
+                class="pregunta-rapida"
+                data-pregunta="¿Cuál es el producto más barato?"
+            >
+                Producto más barato
+            </button>
+
+            <button
+                type="button"
+                class="pregunta-rapida"
+                data-pregunta="¿Qué productos tienen pocas existencias?"
+            >
+                Stock bajo
+            </button>
+
+            <button
+                type="button"
+                class="pregunta-rapida"
+                data-pregunta="¿Qué productos están agotados?"
+            >
+                Productos agotados
+            </button>
+
+            <button
+                type="button"
+                class="pregunta-rapida"
+                data-pregunta="¿Cuál es el valor total del inventario?"
+            >
+                Valor del inventario
+            </button>
+
+            <button
+                type="button"
+                class="pregunta-rapida"
+                data-pregunta="¿Qué libros están disponibles?"
+            >
+                Libros disponibles
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     CHAT
+================================================== -->
+
+<div class="tarjeta chat-tarjeta">
+
+    <div class="tarjeta-header">
+
+        <div>
+            <span class="reporte-numero">
+                INTELIGENCIA ARTIFICIAL LOCAL
+            </span>
+
+            <h3>
+                Consulta al inventario
+            </h3>
+        </div>
+
+        <span class="chat-modelo">
+            productos-qwen2.5
+        </span>
+
+    </div>
+
+
+    <div class="tarjeta-cuerpo">
+
+        <div class="chat-conversacion">
+
+
+            <!-- MENSAJE INICIAL -->
+
+            {% if not pregunta and not respuesta and not error %}
+
+                <div class="mensaje mensaje-ia">
+
+                    <div class="mensaje-avatar">
+                        ✦
+                    </div>
+
+                    <div class="mensaje-contenido">
+
+                        <span class="mensaje-autor">
+                            Asistente IA
+                        </span>
+
+                        <div class="mensaje-burbuja">
+
+                            Hola. Soy el asistente de inventario de
+                            Librería Punto y Coma.
+
+                            Puedes preguntarme sobre productos, precios,
+                            categorías, existencias y stock.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- PREGUNTA DEL USUARIO -->
+
+            {% if pregunta %}
+
+                <div class="mensaje mensaje-usuario">
+
+                    <div class="mensaje-contenido">
+
+                        <span class="mensaje-autor">
+                            Tú
+                        </span>
+
+                        <div class="mensaje-burbuja">
+                            {{ pregunta }}
+                        </div>
+
+                    </div>
+
+                    <div class="mensaje-avatar">
+                        U
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- RESPUESTA DE LA IA -->
+
+            {% if respuesta %}
+
+                <div class="mensaje mensaje-ia">
+
+                    <div class="mensaje-avatar">
+                        ✦
+                    </div>
+
+                    <div class="mensaje-contenido">
+
+                        <span class="mensaje-autor">
+                            Asistente IA
+                        </span>
+
+                        <div class="mensaje-burbuja">
+                            {{ respuesta|linebreaksbr }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- ERROR -->
+
+            {% if error %}
+
+                <div class="mensaje mensaje-error">
+
+                    <div class="mensaje-avatar">
+                        !
+                    </div>
+
+                    <div class="mensaje-contenido">
+
+                        <span class="mensaje-autor">
+                            Error
+                        </span>
+
+                        <div class="mensaje-burbuja">
+                            {{ error }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ==================================================
+             FORMULARIO
+        ================================================== -->
+
+        <form
+            method="POST"
+            class="chat-formulario"
+            id="chatFormulario"
+        >
+
+            {% csrf_token %}
+
+            <div class="chat-input-contenedor">
+
+                <input
+                    type="text"
+                    name="user_input"
+                    id="chatInput"
+                    class="chat-input"
+                    placeholder="Pregunta sobre los productos del inventario..."
+                    autocomplete="off"
+                    maxlength="500"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="chat-enviar"
+                    id="chatEnviar"
+                >
+                    Enviar
+                </button>
+
+            </div>
+
+            <div class="chat-formulario-info">
+
+                <span>
+                    Las respuestas utilizan exclusivamente los
+                    productos registrados en SQLite.
+                </span>
+
+                <span id="contadorCaracteres">
+                    0 / 500
+                </span>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- ==================================================
+         PIE DEL CHAT
+    ================================================== -->
+
+    <div class="chat-footer">
+
+        <span>
+            <span class="chat-estado-punto"></span>
+            Ollama local
+        </span>
+
+        <span>
+            Modelo: productos-qwen2.5
+        </span>
+
+        <span>
+            Librería Punto y Coma
+        </span>
+
+    </div>
+
+</div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const input = document.getElementById("chatInput");
+    const formulario = document.getElementById("chatFormulario");
+    const botonEnviar = document.getElementById("chatEnviar");
+    const contador = document.getElementById("contadorCaracteres");
+
+    const preguntasRapidas =
+        document.querySelectorAll(".pregunta-rapida");
+
+
+    /* ================================================
+       CONTADOR DE CARACTERES
+    ================================================= */
+
+    function actualizarContador() {
+
+        contador.textContent =
+            input.value.length + " / 500";
+
+    }
+
+    input.addEventListener(
+        "input",
+        actualizarContador
+    );
+
+
+    /* ================================================
+       PREGUNTAS RÁPIDAS
+    ================================================= */
+
+    preguntasRapidas.forEach(function (boton) {
+
+        boton.addEventListener(
+            "click",
+            function () {
+
+                input.value =
+                    boton.dataset.pregunta;
+
+                actualizarContador();
+
+                input.focus();
+
+            }
+        );
+
+    });
+
+
+    /* ================================================
+       ESTADO DE ENVÍO
+    ================================================= */
+
+    formulario.addEventListener(
+        "submit",
+        function () {
+
+            if (!input.value.trim()) {
+                return;
+            }
+
+            botonEnviar.disabled = true;
+
+            botonEnviar.textContent =
+                "Consultando...";
+
+        }
+    );
+
+
+    input.focus();
+
+});
+
+</script>
+
+{% endblock %}

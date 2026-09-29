@@ -1,0 +1,133 @@
+{% extends "productos/base.html" %}
+
+{% block titulo %}
+Eliminar producto | Punto y Coma
+{% endblock %}
+
+{% block menu_productos %}
+activo
+{% endblock %}
+
+{% block topbar %}
+Inventario / Eliminar producto
+{% endblock %}
+
+{% block contenido %}
+
+<div class="confirmacion-eliminar">
+
+    <div class="tarjeta">
+
+        <div
+            class="tarjeta-cuerpo"
+            style="text-align:center;"
+        >
+
+            <div class="icono-peligro">
+                !
+            </div>
+
+
+            <h2 style="
+                margin:0 0 10px;
+                font-family:Georgia, serif;
+            ">
+                Eliminar producto
+            </h2>
+
+
+            <p style="
+                color:var(--color-texto-secundario);
+                line-height:1.6;
+                margin-bottom:22px;
+            ">
+
+                Estás a punto de eliminar
+
+                <strong>
+                    {{ producto.nombre }}
+                </strong>
+
+                del inventario.
+
+            </p>
+
+
+            <div
+                class="detalle-item"
+                style="
+                    text-align:left;
+                    margin-bottom:22px;
+                "
+            >
+
+                <span class="detalle-etiqueta">
+                    Producto
+                </span>
+
+                <strong>
+                    {{ producto.codigo }} —
+                    {{ producto.nombre }}
+                </strong>
+
+                <br>
+
+                <span style="
+                    color:var(--color-texto-secundario);
+                    font-size:12px;
+                ">
+                    {{ producto.get_categoria_display }}
+                    · {{ producto.cantidad_existente }} unidades
+                    · Bs {{ producto.precio }}
+                </span>
+
+            </div>
+
+
+            <div
+                class="mensaje error"
+                style="text-align:left;"
+            >
+                Esta operación eliminará el registro
+                de la base de datos.
+            </div>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div
+                    style="
+                        display:flex;
+                        justify-content:center;
+                        gap:10px;
+                        margin-top:22px;
+                    "
+                >
+
+                    <a
+                        href="{% url 'productos:detalle' producto.pk %}"
+                        class="btn btn-secundario"
+                    >
+                        Cancelar
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-peligro"
+                    >
+                        Sí, eliminar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

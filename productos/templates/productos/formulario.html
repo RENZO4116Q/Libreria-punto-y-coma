@@ -1,0 +1,273 @@
+{% extends "productos/base.html" %}
+
+{% block titulo %}
+{{ titulo }} | Punto y Coma
+{% endblock %}
+
+{% block menu_productos %}
+activo
+{% endblock %}
+
+{% block topbar %}
+Inventario / {{ titulo }}
+{% endblock %}
+
+{% block contenido %}
+
+<div class="encabezado-pagina">
+
+    <div>
+        <h2>{{ titulo }}</h2>
+
+        <p>
+            Completa la información del producto de la
+            Librería Punto y Coma.
+        </p>
+    </div>
+
+    <a
+        href="{% url 'productos:lista' %}"
+        class="btn btn-secundario"
+    >
+        ← Volver
+    </a>
+
+</div>
+
+
+<div class="formulario-contenedor">
+
+    <div class="tarjeta">
+
+        <div class="tarjeta-cuerpo">
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                {% if formulario.non_field_errors %}
+
+                    <div class="mensaje error">
+
+                        {% for error in formulario.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+
+                <div class="formulario-grid">
+
+                    <!-- CÓDIGO -->
+
+                    <div class="form-grupo">
+
+                        <label for="{{ formulario.codigo.id_for_label }}">
+                            Código *
+                        </label>
+
+                        {{ formulario.codigo }}
+
+                        <span class="form-ayuda">
+                            Identificador único. Ejemplo: LIB006
+                        </span>
+
+                        {% for error in formulario.codigo.errors %}
+                            <span class="form-error">
+                                {{ error }}
+                            </span>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- NOMBRE -->
+
+                    <div class="form-grupo">
+
+                        <label for="{{ formulario.nombre.id_for_label }}">
+                            Nombre *
+                        </label>
+
+                        {{ formulario.nombre }}
+
+                        {% for error in formulario.nombre.errors %}
+                            <span class="form-error">
+                                {{ error }}
+                            </span>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- DESCRIPCIÓN -->
+
+                    <div class="form-grupo ancho-completo">
+
+                        <label for="{{ formulario.descripcion.id_for_label }}">
+                            Descripción
+                        </label>
+
+                        {{ formulario.descripcion }}
+
+                        {% for error in formulario.descripcion.errors %}
+                            <span class="form-error">
+                                {{ error }}
+                            </span>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- CATEGORÍA -->
+
+                    <div class="form-grupo">
+
+                        <label for="{{ formulario.categoria.id_for_label }}">
+                            Categoría *
+                        </label>
+
+                        {{ formulario.categoria }}
+
+                        {% for error in formulario.categoria.errors %}
+                            <span class="form-error">
+                                {{ error }}
+                            </span>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- PRECIO -->
+
+                    <div class="form-grupo">
+
+                        <label for="{{ formulario.precio.id_for_label }}">
+                            Precio (Bs) *
+                        </label>
+
+                        {{ formulario.precio }}
+
+                        <span class="form-ayuda">
+                            No se permiten valores negativos.
+                        </span>
+
+                        {% for error in formulario.precio.errors %}
+                            <span class="form-error">
+                                {{ error }}
+                            </span>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- EXISTENCIA -->
+
+                    <div class="form-grupo">
+
+                        <label for="{{ formulario.cantidad_existente.id_for_label }}">
+                            Cantidad existente *
+                        </label>
+
+                        {{ formulario.cantidad_existente }}
+
+                        {% for error in formulario.cantidad_existente.errors %}
+                            <span class="form-error">
+                                {{ error }}
+                            </span>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- STOCK MÍNIMO -->
+
+                    <div class="form-grupo">
+
+                        <label for="{{ formulario.stock_minimo.id_for_label }}">
+                            Stock mínimo *
+                        </label>
+
+                        {{ formulario.stock_minimo }}
+
+                        <span class="form-ayuda">
+                            Se utilizará para generar alertas de inventario.
+                        </span>
+
+                        {% for error in formulario.stock_minimo.errors %}
+                            <span class="form-error">
+                                {{ error }}
+                            </span>
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- ESTADO -->
+
+                    <div class="form-grupo ancho-completo">
+
+                        <label>
+                            Estado del producto
+                        </label>
+
+                        <div style="
+                            display:flex;
+                            align-items:center;
+                            gap:10px;
+                            padding:12px;
+                            background:var(--color-superficie-secundaria);
+                            border-radius:8px;
+                        ">
+
+                            {{ formulario.estado }}
+
+                            <label
+                                for="{{ formulario.estado.id_for_label }}"
+                                style="font-weight:500;"
+                            >
+                                Producto activo
+                            </label>
+
+                        </div>
+
+                        <span class="form-ayuda">
+                            Los productos inactivos permanecen registrados,
+                            pero pueden identificarse como fuera de catálogo.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-acciones">
+
+                    <a
+                        href="{% url 'productos:lista' %}"
+                        class="btn btn-secundario"
+                    >
+                        Cancelar
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-principal"
+                    >
+                        {{ texto_boton }}
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

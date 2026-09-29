@@ -1,0 +1,769 @@
+{% extends "productos/base.html" %}
+
+{% block titulo %}
+Reportes | Librería Punto y Coma
+{% endblock %}
+
+{% block menu_reportes %}
+activo
+{% endblock %}
+
+{% block topbar %}
+Reportes de inventario
+{% endblock %}
+
+{% block contenido %}
+
+
+<!-- ==================================================
+     ENCABEZADO
+================================================== -->
+
+<div class="encabezado-pagina">
+
+    <div>
+
+        <h2>
+            Reportes de inventario
+        </h2>
+
+        <p>
+            Consulta información actualizada de los productos
+            registrados en Librería Punto y Coma.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     MENÚ DE REPORTES
+================================================== -->
+
+<div class="reportes-menu">
+
+    <a href="#todos" class="reporte-menu-card">
+        <strong>01</strong>
+        <span>Todos los productos</span>
+    </a>
+
+    <a href="#caro" class="reporte-menu-card">
+        <strong>02</strong>
+        <span>Producto más caro</span>
+    </a>
+
+    <a href="#barato" class="reporte-menu-card">
+        <strong>03</strong>
+        <span>Producto más barato</span>
+    </a>
+
+    <a href="#stock" class="reporte-menu-card">
+        <strong>04</strong>
+        <span>Stock bajo</span>
+    </a>
+
+    <a href="#agotados" class="reporte-menu-card">
+        <strong>05</strong>
+        <span>Productos agotados</span>
+    </a>
+
+    <a href="#categoria" class="reporte-menu-card">
+        <strong>06</strong>
+        <span>Por categoría</span>
+    </a>
+
+    <a href="#valor" class="reporte-menu-card">
+        <strong>07</strong>
+        <span>Valor del inventario</span>
+    </a>
+
+    <a href="#existencia" class="reporte-menu-card">
+        <strong>08</strong>
+        <span>Mayor existencia</span>
+    </a>
+
+</div>
+
+
+<!-- ==================================================
+     REPORTE 1
+================================================== -->
+
+<section id="todos" class="reporte-seccion">
+
+    <div class="tarjeta">
+
+        <div class="tarjeta-header">
+
+            <div>
+                <span class="reporte-numero">
+                    REPORTE 01
+                </span>
+
+                <h3>
+                    Todos los productos
+                </h3>
+
+                <p>
+                    Productos activos registrados actualmente.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="tarjeta-cuerpo">
+
+            {% if todos_productos %}
+
+            <div class="tabla-responsive">
+
+                <table class="tabla-productos">
+
+                    <thead>
+
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Existencia</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for producto in todos_productos %}
+
+                        <tr>
+
+                            <td>
+                                {{ producto.codigo }}
+                            </td>
+
+                            <td>
+
+                                <a href="{% url 'productos:detalle' producto.pk %}">
+                                    {{ producto.nombre }}
+                                </a>
+
+                            </td>
+
+                            <td>
+                                {{ producto.get_categoria_display }}
+                            </td>
+
+                            <td>
+                                Bs {{ producto.precio }}
+                            </td>
+
+                            <td>
+                                {{ producto.cantidad_existente }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+                <p>
+                    No existen productos activos.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==================================================
+     REPORTES 2 Y 3
+================================================== -->
+
+<div class="reportes-doble">
+
+
+    <!-- MÁS CARO -->
+
+    <section id="caro" class="tarjeta">
+
+        <div class="tarjeta-header">
+
+            <div>
+
+                <span class="reporte-numero">
+                    REPORTE 02
+                </span>
+
+                <h3>
+                    Producto más caro
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="tarjeta-cuerpo">
+
+            {% if producto_mas_caro %}
+
+                <div class="reporte-destacado">
+
+                    <span class="reporte-codigo">
+                        {{ producto_mas_caro.codigo }}
+                    </span>
+
+                    <strong>
+                        {{ producto_mas_caro.nombre }}
+                    </strong>
+
+                    <span>
+                        {{ producto_mas_caro.get_categoria_display }}
+                    </span>
+
+                    <div class="reporte-precio">
+                        Bs {{ producto_mas_caro.precio }}
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                <p>
+                    No existen productos.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- MÁS BARATO -->
+
+    <section id="barato" class="tarjeta">
+
+        <div class="tarjeta-header">
+
+            <div>
+
+                <span class="reporte-numero">
+                    REPORTE 03
+                </span>
+
+                <h3>
+                    Producto más barato
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="tarjeta-cuerpo">
+
+            {% if producto_mas_barato %}
+
+                <div class="reporte-destacado">
+
+                    <span class="reporte-codigo">
+                        {{ producto_mas_barato.codigo }}
+                    </span>
+
+                    <strong>
+                        {{ producto_mas_barato.nombre }}
+                    </strong>
+
+                    <span>
+                        {{ producto_mas_barato.get_categoria_display }}
+                    </span>
+
+                    <div class="reporte-precio">
+                        Bs {{ producto_mas_barato.precio }}
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                <p>
+                    No existen productos.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- ==================================================
+     REPORTE 4 - STOCK BAJO
+================================================== -->
+
+<section id="stock" class="reporte-seccion">
+
+    <div class="tarjeta">
+
+        <div class="tarjeta-header">
+
+            <div>
+
+                <span class="reporte-numero">
+                    REPORTE 04
+                </span>
+
+                <h3>
+                    Productos con pocas existencias
+                </h3>
+
+                <p>
+                    Existencia igual o inferior al stock mínimo.
+                </p>
+
+            </div>
+
+            <span class="contador-reporte">
+                {{ stock_bajo|length }}
+            </span>
+
+        </div>
+
+
+        <div class="tarjeta-cuerpo">
+
+            {% if stock_bajo %}
+
+                <div class="lista-dashboard">
+
+                    {% for producto in stock_bajo %}
+
+                    <a
+                        href="{% url 'productos:detalle' producto.pk %}"
+                        class="dashboard-producto"
+                    >
+
+                        <div>
+
+                            <strong>
+                                {{ producto.nombre }}
+                            </strong>
+
+                            <span>
+                                {{ producto.codigo }}
+                                ·
+                                {{ producto.get_categoria_display }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="dashboard-cantidad">
+
+                            <span class="estado estado-bajo">
+
+                                {{ producto.cantidad_existente }}
+                                unidades
+
+                            </span>
+
+                            <small>
+                                Stock mínimo:
+                                {{ producto.stock_minimo }}
+                            </small>
+
+                        </div>
+
+                    </a>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="dashboard-vacio">
+
+                    <strong>
+                        No hay alertas
+                    </strong>
+
+                    <p>
+                        Ningún producto tiene stock bajo.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==================================================
+     REPORTE 5 - AGOTADOS
+================================================== -->
+
+<section id="agotados" class="reporte-seccion">
+
+    <div class="tarjeta">
+
+        <div class="tarjeta-header">
+
+            <div>
+
+                <span class="reporte-numero">
+                    REPORTE 05
+                </span>
+
+                <h3>
+                    Productos agotados
+                </h3>
+
+                <p>
+                    Productos activos sin unidades disponibles.
+                </p>
+
+            </div>
+
+            <span class="contador-reporte">
+                {{ agotados|length }}
+            </span>
+
+        </div>
+
+
+        <div class="tarjeta-cuerpo">
+
+            {% if agotados %}
+
+                <div class="lista-dashboard">
+
+                    {% for producto in agotados %}
+
+                    <a
+                        href="{% url 'productos:detalle' producto.pk %}"
+                        class="dashboard-producto"
+                    >
+
+                        <div>
+
+                            <strong>
+                                {{ producto.nombre }}
+                            </strong>
+
+                            <span>
+                                {{ producto.codigo }}
+                                ·
+                                {{ producto.get_categoria_display }}
+                            </span>
+
+                        </div>
+
+                        <span class="estado estado-agotado">
+                            Agotado
+                        </span>
+
+                    </a>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="dashboard-vacio">
+
+                    <strong>
+                        Sin productos agotados
+                    </strong>
+
+                    <p>
+                        Todos los productos tienen existencias.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==================================================
+     REPORTE 6 - CATEGORÍA
+================================================== -->
+
+<section id="categoria" class="reporte-seccion">
+
+    <div class="tarjeta">
+
+        <div class="tarjeta-header">
+
+            <div>
+
+                <span class="reporte-numero">
+                    REPORTE 06
+                </span>
+
+                <h3>
+                    Productos por categoría
+                </h3>
+
+                <p>
+                    Selecciona una categoría del inventario.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="tarjeta-cuerpo">
+
+            <form
+                method="GET"
+                action="#categoria"
+                class="filtro-categoria"
+            >
+
+                <select
+                    name="categoria"
+                    class="form-control"
+                >
+
+                    <option value="">
+                        Seleccionar categoría
+                    </option>
+
+                    {% for valor, nombre in categorias %}
+
+                    <option
+                        value="{{ valor }}"
+                        {% if categoria_seleccionada == valor %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ nombre }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-principal"
+                >
+                    Consultar
+                </button>
+
+            </form>
+
+
+            {% if categoria_seleccionada %}
+
+                <div class="resultado-categoria">
+
+                    {% if productos_categoria %}
+
+                        {% for producto in productos_categoria %}
+
+                            <a
+                                href="{% url 'productos:detalle' producto.pk %}"
+                                class="dashboard-producto"
+                            >
+
+                                <div>
+
+                                    <strong>
+                                        {{ producto.nombre }}
+                                    </strong>
+
+                                    <span>
+                                        {{ producto.codigo }}
+                                    </span>
+
+                                </div>
+
+                                <div class="dashboard-cantidad">
+
+                                    <strong>
+                                        Bs {{ producto.precio }}
+                                    </strong>
+
+                                    <small>
+                                        {{ producto.cantidad_existente }}
+                                        unidades
+                                    </small>
+
+                                </div>
+
+                            </a>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <div class="dashboard-vacio">
+
+                            No existen productos activos
+                            en esta categoría.
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ==================================================
+     REPORTES 7 Y 8
+================================================== -->
+
+<div class="reportes-doble">
+
+
+    <!-- VALOR TOTAL -->
+
+    <section id="valor" class="tarjeta">
+
+        <div class="tarjeta-header">
+
+            <div>
+
+                <span class="reporte-numero">
+                    REPORTE 07
+                </span>
+
+                <h3>
+                    Valor total del inventario
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="tarjeta-cuerpo">
+
+            <div class="valor-inventario">
+
+                <span>
+                    Valor estimado actual
+                </span>
+
+                <strong>
+                    Bs {{ valor_total|floatformat:2 }}
+                </strong>
+
+                <small>
+                    Precio × cantidad disponible
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MAYOR EXISTENCIA -->
+
+    <section id="existencia" class="tarjeta">
+
+        <div class="tarjeta-header">
+
+            <div>
+
+                <span class="reporte-numero">
+                    REPORTE 08
+                </span>
+
+                <h3>
+                    Mayor cantidad disponible
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="tarjeta-cuerpo">
+
+            {% if mayor_existencia %}
+
+                <div class="lista-ranking">
+
+                    {% for producto in mayor_existencia %}
+
+                    <div class="ranking-item">
+
+                        <span class="ranking-posicion">
+                            {{ forloop.counter }}
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                {{ producto.nombre }}
+                            </strong>
+
+                            <small>
+                                {{ producto.codigo }}
+                            </small>
+
+                        </div>
+
+                        <strong class="ranking-cantidad">
+
+                            {{ producto.cantidad_existente }}
+
+                        </strong>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

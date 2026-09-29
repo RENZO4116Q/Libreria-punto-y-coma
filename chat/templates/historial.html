@@ -1,0 +1,206 @@
+{% extends "productos/base.html" %}
+
+{% block titulo %}
+Historial IA | Librería Punto y Coma
+{% endblock %}
+
+
+{% block topbar %}
+Historial de Inteligencia Artificial
+{% endblock %}
+
+
+{% block contenido %}
+
+<!-- ==================================================
+     ENCABEZADO
+================================================== -->
+
+<div class="encabezado-pagina">
+
+    <div>
+
+        <h2>
+            Historial de consultas
+        </h2>
+
+        <p>
+            Registro de las preguntas procesadas por el
+            asistente de inventario de Librería Punto y Coma.
+        </p>
+
+    </div>
+
+    <a
+        href="{% url 'chat' %}"
+        class="btn btn-principal"
+    >
+        Ir al asistente IA
+    </a>
+
+</div>
+
+
+<!-- ==================================================
+     RESUMEN
+================================================== -->
+
+<div class="historial-resumen historial-resumen-cuatro">
+
+    <div class="historial-estadistica">
+        <span>Consultas</span>
+        <strong>{{ total_consultas }}</strong>
+    </div>
+
+    <div class="historial-estadistica">
+        <span>Procesadas por IA</span>
+        <strong>{{ consultas_ia }}</strong>
+    </div>
+
+    <div class="historial-estadistica">
+        <span>Rechazadas</span>
+        <strong>{{ consultas_rechazadas }}</strong>
+    </div>
+
+    <div class="historial-estadistica">
+        <span>Errores</span>
+        <strong>{{ consultas_error }}</strong>
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     HISTORIAL
+================================================== -->
+
+<div class="tarjeta">
+
+    <div class="tarjeta-header">
+
+        <div>
+
+            <span class="reporte-numero">
+                INTELIGENCIA ARTIFICIAL
+            </span>
+
+            <h3>
+                Consultas recientes
+            </h3>
+
+            <p>
+                Preguntas y respuestas almacenadas en SQLite.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="tarjeta-cuerpo">
+
+        {% if consultas %}
+
+            <div class="historial-lista">
+
+                {% for consulta in consultas %}
+
+                    <article class="historial-item">
+
+                        <div class="historial-item-header">
+
+                            <div>
+
+                                <span class="historial-fecha">
+                                    {{ consulta.fecha|date:"d/m/Y H:i" }}
+                                </span>
+
+                                {% if consulta.tipo_resultado == "ia" %}
+
+                                    <span class="estado estado-activo">
+                                        Procesada por IA
+                                    </span>
+
+                                {% elif consulta.tipo_resultado == "rechazada" %}
+
+                                    <span class="estado estado-advertencia">
+                                        Rechazada por ámbito
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="estado estado-agotado">
+                                        Error de Ollama
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                            <span class="historial-modelo">
+                                {{ consulta.modelo }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="historial-pregunta">
+
+                            <span>
+                                Pregunta
+                            </span>
+
+                            <strong>
+                                {{ consulta.pregunta }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="historial-respuesta">
+
+                            <span>
+                                Respuesta
+                            </span>
+
+                            <p>
+                                {{ consulta.respuesta }}
+                            </p>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="dashboard-vacio">
+
+                <strong>
+                    Todavía no existen consultas
+                </strong>
+
+                <p>
+                    Realiza una pregunta al asistente de inventario
+                    para comenzar a generar el historial.
+                </p>
+
+                <a
+                    href="{% url 'chat' %}"
+                    class="btn btn-principal"
+                >
+                    Abrir asistente IA
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

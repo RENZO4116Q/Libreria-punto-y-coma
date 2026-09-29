@@ -1,0 +1,321 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block titulo %}
+            Librería Punto y Coma
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'productos/css/estilos.css' %}"
+    >
+
+    {% block estilos %}
+    {% endblock %}
+
+</head>
+
+
+<body>
+
+<div class="layout">
+
+    <!-- ==========================================
+         MENÚ LATERAL
+         ========================================== -->
+
+    <aside class="sidebar">
+
+        <div class="marca">
+
+            <div class="marca-icono">
+                📚
+            </div>
+
+            <div class="marca-texto">
+
+                <h1>
+                    Punto y Coma
+                </h1>
+
+                <span>
+                    GESTIÓN DE LIBRERÍA
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="menu">
+
+            <div class="menu-titulo">
+                Principal
+            </div>
+
+
+            <a
+                href="{% url 'productos:dashboard' %}"
+                class="menu-enlace {% block menu_inicio %}{% endblock %}"
+            >
+            <span>⌂</span>
+            Inicio
+            </a>
+
+
+            <a
+                href="{% url 'productos:lista' %}"
+                class="menu-enlace {% block menu_productos %}{% endblock %}"
+            >
+            <span>▦</span>
+            Productos
+            </a>
+
+
+            <a
+                href="{% url 'productos:reportes' %}"
+                class="menu-enlace {% block menu_reportes %}{% endblock %}"
+            >
+
+                <span class="menu-icono">
+                    ▥
+                </span>
+
+                <span>
+                    Reportes
+                </span>
+
+            </a>
+
+
+            <div
+                class="menu-titulo"
+                style="margin-top: 18px;"
+            >
+                Inteligencia artificial
+            </div>
+
+
+            <a
+                href="{% url 'chat' %}"
+                class="menu-enlace"
+            >
+                <span>✦</span>
+                Asistente IA
+            </a>
+
+
+            <a
+                href="{% url 'historial' %}"
+                class="menu-enlace"
+            >
+                <span>◷</span>
+                Historial IA
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-pie">
+
+            <div class="estado-sistema">
+
+                <div class="estado-punto"></div>
+
+                <span>
+                    Sistema disponible
+                </span>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="boton-tema"
+                id="botonTema"
+            >
+
+                <span>
+                    Tema oscuro
+                </span>
+
+                <strong id="iconoTema">
+                    ☾
+                </strong>
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ==========================================
+         CONTENIDO
+         ========================================== -->
+
+    <main class="contenido">
+
+        <header class="topbar">
+
+            <div class="topbar-titulo">
+
+                {% block topbar %}
+                    Sistema de gestión de inventario
+                {% endblock %}
+
+            </div>
+
+
+            <div class="topbar-derecha">
+
+                <span class="insignia-local">
+                    Ollama local
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <section class="pagina">
+
+            <!-- MENSAJES DE DJANGO -->
+
+            {% if messages %}
+
+                <div class="mensajes">
+
+                    {% for message in messages %}
+
+                        <div
+                            class="mensaje {{ message.tags }}"
+                        >
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- CONTENIDO DE CADA PÁGINA -->
+
+            {% block contenido %}
+            {% endblock %}
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ==========================================
+     TEMA CLARO / OSCURO
+     ========================================== -->
+
+<script>
+
+    const botonTema =
+        document.getElementById("botonTema");
+
+    const iconoTema =
+        document.getElementById("iconoTema");
+
+
+    function actualizarBotonTema() {
+
+        const oscuro =
+            document.body.classList.contains(
+                "tema-oscuro"
+            );
+
+        if (oscuro) {
+
+            botonTema.querySelector("span").textContent =
+                "Tema claro";
+
+            iconoTema.textContent = "☀";
+
+        } else {
+
+            botonTema.querySelector("span").textContent =
+                "Tema oscuro";
+
+            iconoTema.textContent = "☾";
+
+        }
+
+    }
+
+
+    const temaGuardado =
+        localStorage.getItem("tema");
+
+
+    if (temaGuardado === "oscuro") {
+
+        document.body.classList.add(
+            "tema-oscuro"
+        );
+
+    }
+
+
+    actualizarBotonTema();
+
+
+    botonTema.addEventListener(
+        "click",
+        function () {
+
+            document.body.classList.toggle(
+                "tema-oscuro"
+            );
+
+
+            const oscuro =
+                document.body.classList.contains(
+                    "tema-oscuro"
+                );
+
+
+            localStorage.setItem(
+                "tema",
+                oscuro
+                    ? "oscuro"
+                    : "claro"
+            );
+
+
+            actualizarBotonTema();
+
+        }
+    );
+
+</script>
+
+
+{% block scripts %}
+{% endblock %}
+
+
+</body>
+
+</html>

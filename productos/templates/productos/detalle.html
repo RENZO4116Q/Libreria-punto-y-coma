@@ -1,0 +1,317 @@
+{% extends "productos/base.html" %}
+
+{% block titulo %}
+{{ producto.nombre }} | Punto y Coma
+{% endblock %}
+
+{% block menu_productos %}
+activo
+{% endblock %}
+
+{% block topbar %}
+Inventario / Detalle del producto
+{% endblock %}
+
+{% block contenido %}
+
+<div class="encabezado-pagina">
+
+    <div>
+
+        <h2>
+            {{ producto.nombre }}
+        </h2>
+
+        <p>
+            Información registrada del producto
+            {{ producto.codigo }}.
+        </p>
+
+    </div>
+
+
+    <div class="acciones">
+
+        <a
+            href="{% url 'productos:lista' %}"
+            class="btn btn-secundario"
+        >
+            ← Volver
+        </a>
+
+        <a
+            href="{% url 'productos:editar' producto.pk %}"
+            class="btn btn-principal"
+        >
+            Editar producto
+        </a>
+
+    </div>
+
+</div>
+
+
+<div class="tarjeta">
+
+    <div class="tarjeta-cuerpo">
+
+        <div class="detalle-grid">
+
+
+            <!-- CÓDIGO -->
+
+            <div class="detalle-item">
+
+                <span class="detalle-etiqueta">
+                    Código
+                </span>
+
+                <span class="detalle-valor">
+                    {{ producto.codigo }}
+                </span>
+
+            </div>
+
+
+            <!-- CATEGORÍA -->
+
+            <div class="detalle-item">
+
+                <span class="detalle-etiqueta">
+                    Categoría
+                </span>
+
+                <span class="detalle-valor">
+                    {{ producto.get_categoria_display }}
+                </span>
+
+            </div>
+
+
+            <!-- PRECIO -->
+
+            <div class="detalle-item">
+
+                <span class="detalle-etiqueta">
+                    Precio
+                </span>
+
+                <span class="detalle-valor">
+                    Bs {{ producto.precio }}
+                </span>
+
+            </div>
+
+
+            <!-- EXISTENCIA -->
+
+            <div class="detalle-item">
+
+                <span class="detalle-etiqueta">
+                    Cantidad existente
+                </span>
+
+                <span class="detalle-valor">
+                    {{ producto.cantidad_existente }} unidades
+                </span>
+
+            </div>
+
+
+            <!-- STOCK MÍNIMO -->
+
+            <div class="detalle-item">
+
+                <span class="detalle-etiqueta">
+                    Stock mínimo
+                </span>
+
+                <span class="detalle-valor">
+                    {{ producto.stock_minimo }} unidades
+                </span>
+
+            </div>
+
+
+            <!-- VALOR EN INVENTARIO -->
+
+            <div class="detalle-item">
+
+                <span class="detalle-etiqueta">
+                    Valor en inventario
+                </span>
+
+                <span class="detalle-valor">
+                    Bs {{ producto.valor_inventario }}
+                </span>
+
+            </div>
+
+
+            <!-- ESTADO -->
+
+            <div class="detalle-item">
+
+                <span class="detalle-etiqueta">
+                    Estado
+                </span>
+
+                <span class="detalle-valor">
+
+                    {% if not producto.estado %}
+
+                        <span class="estado estado-inactivo">
+                            Inactivo
+                        </span>
+
+                    {% elif producto.agotado %}
+
+                        <span class="estado estado-agotado">
+                            ● Agotado
+                        </span>
+
+                    {% elif producto.stock_bajo %}
+
+                        <span class="estado estado-bajo">
+                            ● Stock bajo
+                        </span>
+
+                    {% else %}
+
+                        <span class="estado estado-normal">
+                            ● Disponible
+                        </span>
+
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+            <!-- FECHA -->
+
+            <div class="detalle-item">
+
+                <span class="detalle-etiqueta">
+                    Fecha de registro
+                </span>
+
+                <span class="detalle-valor">
+                    {{ producto.fecha_registro|date:"d/m/Y H:i" }}
+                </span>
+
+            </div>
+
+
+            <!-- DESCRIPCIÓN -->
+
+            <div class="detalle-item ancho-completo">
+
+                <span class="detalle-etiqueta">
+                    Descripción
+                </span>
+
+                <div class="detalle-valor">
+
+                    {% if producto.descripcion %}
+
+                        {{ producto.descripcion }}
+
+                    {% else %}
+
+                        <span style="color:var(--color-texto-secundario);">
+                            Sin descripción registrada.
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+<div class="control-stock">
+
+    <div class="control-stock-info">
+
+        <span class="detalle-etiqueta">
+            Control de existencia
+        </span>
+
+        <strong>
+            {{ producto.cantidad_existente }} unidades disponibles
+        </strong>
+
+        <small>
+            Stock mínimo configurado:
+            {{ producto.stock_minimo }}
+        </small>
+
+    </div>
+
+
+    <div class="control-stock-botones">
+
+        <form
+            method="POST"
+            action="{% url 'productos:disminuir_stock' producto.pk %}"
+        >
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="btn btn-secundario"
+                {% if producto.cantidad_existente == 0 %}
+                    disabled
+                {% endif %}
+            >
+                − Disminuir
+            </button>
+
+        </form>
+
+
+        <form
+            method="POST"
+            action="{% url 'productos:aumentar_stock' producto.pk %}"
+        >
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="btn btn-principal"
+            >
+                + Aumentar
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+        <div class="form-acciones">
+
+            <a
+                href="{% url 'productos:eliminar' producto.pk %}"
+                class="btn btn-peligro"
+            >
+                Eliminar producto
+            </a>
+
+            <a
+                href="{% url 'productos:editar' producto.pk %}"
+                class="btn btn-principal"
+            >
+                Editar producto
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

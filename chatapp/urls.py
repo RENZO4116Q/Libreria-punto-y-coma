@@ -15,9 +15,40 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from chat.views import chat_view
+from django.urls import include, path
+from django.views.generic import RedirectView
+
+from chat.views import chat_view, historial_view
+
 
 urlpatterns = [
-    path('chat/', chat_view, name='chat'),
+    path(
+        "admin/",
+        admin.site.urls,
+    ),
+
+    path(
+        "productos/",
+        include("productos.urls"),
+    ),
+
+    path(
+        "chat/",
+        chat_view,
+        name="chat",
+    ),
+
+    path(
+        "historial/",
+        historial_view,
+        name="historial",
+    ),
+
+    path(
+        "",
+        RedirectView.as_view(
+            pattern_name="productos:dashboard",
+            permanent=False,
+        ),
+    ),
 ]
